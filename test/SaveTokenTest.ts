@@ -49,12 +49,35 @@ describe("Contract cases", function () {
       expect(tx).to.be.revertedWithCustomError;
     })
 
-    it("Should pass with rejectedwith, when attempted to deposit with amount greater than users owned token", async function () {
+    it("Should pass an emit after successful transaction", async function () {
+      const { saveERC20, token } = await loadFixture(deployContractsInstances);
+      await token.approve(saveERC20.target, 100)
+      const tx = saveERC20.deposit(100)
+
+      expect(tx).to.emit;
+    })
+
+    it("Should increase contract's balance on safe deposit", async function () {
+      const { saveERC20, token } = await loadFixture(deployContractsInstances);
+      await token.approve(saveERC20.target, 100)
+      await saveERC20.deposit(50)
+      const bal = await saveERC20.checkContractBalance()
+      expect(bal).to.equal(50);
+    })
+
+    it("Should pass with revertedWithCustomError, when attempted to deposit with amount greater than users owned token", async function () {
       const { saveERC20, token, owner } = await loadFixture(deployContractsInstances);
       await token.approve(saveERC20.target, 100)
       const tx = saveERC20.deposit(1000)
-      await expect(tx).to.be.revertedWith("not enough token");
+      expect(tx).to.be.revertedWithCustomError;
+    })
+  })
+  describe("Withdraw", function () {
+    it("Should pass with revertedWith, when attempted to withdraw amount equal 0", async function () {
+      const { saveERC20, token } = await loadFixture(deployContractsInstances);
+      await token.approve(saveERC20.target, 100)
+      const tx = saveERC20.deposit(100)
+      await expect(tx).to.be.revertedWith("can't save zero value");
     })
   })
 });
-           

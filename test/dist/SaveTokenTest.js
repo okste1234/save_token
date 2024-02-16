@@ -129,7 +129,48 @@ describe("Contract cases", function () {
                 });
             });
         });
-        it("Should pass with rejectedwith, when attempted to deposit with amount greater than users owned token", function () {
+        it("Should pass an emit after successful transaction", function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var _a, saveERC20, token, tx;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4 /*yield*/, network_helpers_1.loadFixture(deployContractsInstances)];
+                        case 1:
+                            _a = _b.sent(), saveERC20 = _a.saveERC20, token = _a.token;
+                            return [4 /*yield*/, token.approve(saveERC20.target, 100)];
+                        case 2:
+                            _b.sent();
+                            tx = saveERC20.deposit(100);
+                            chai_1.expect(tx).to.emit;
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        });
+        it("Should increase contract's balance on safe deposit", function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var _a, saveERC20, token, bal;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0: return [4 /*yield*/, network_helpers_1.loadFixture(deployContractsInstances)];
+                        case 1:
+                            _a = _b.sent(), saveERC20 = _a.saveERC20, token = _a.token;
+                            return [4 /*yield*/, token.approve(saveERC20.target, 100)];
+                        case 2:
+                            _b.sent();
+                            return [4 /*yield*/, saveERC20.deposit(50)];
+                        case 3:
+                            _b.sent();
+                            return [4 /*yield*/, saveERC20.checkContractBalance()];
+                        case 4:
+                            bal = _b.sent();
+                            chai_1.expect(bal).to.equal(50);
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        });
+        it("Should pass with revertedWithCustomError, when attempted to deposit with amount greater than users owned token", function () {
             return __awaiter(this, void 0, void 0, function () {
                 var _a, saveERC20, token, owner, tx;
                 return __generator(this, function (_b) {
@@ -141,9 +182,26 @@ describe("Contract cases", function () {
                         case 2:
                             _b.sent();
                             tx = saveERC20.deposit(1000);
-                            return [4 /*yield*/, chai_1.expect(tx).to.be.revertedWith("not enough token")];
-                        case 3:
-                            _b.sent();
+                            chai_1.expect(tx).to.be.revertedWithCustomError;
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        });
+    });
+    describe("Withdraw", function () {
+        it("Should pass with revertedWith, when attempted to withdraw amount equal 0", function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var saveERC20, tx;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, network_helpers_1.loadFixture(deployContractsInstances)];
+                        case 1:
+                            saveERC20 = (_a.sent()).saveERC20;
+                            tx = saveERC20.deposit(0);
+                            return [4 /*yield*/, chai_1.expect(tx).to.be.revertedWith("can't save zero value")];
+                        case 2:
+                            _a.sent();
                             return [2 /*return*/];
                     }
                 });
