@@ -192,16 +192,19 @@ describe("Contract cases", function () {
     describe("Withdraw", function () {
         it("Should pass with revertedWith, when attempted to withdraw amount equal 0", function () {
             return __awaiter(this, void 0, void 0, function () {
-                var saveERC20, tx;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
+                var _a, saveERC20, token, tx;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
                         case 0: return [4 /*yield*/, network_helpers_1.loadFixture(deployContractsInstances)];
                         case 1:
-                            saveERC20 = (_a.sent()).saveERC20;
-                            tx = saveERC20.deposit(0);
-                            return [4 /*yield*/, chai_1.expect(tx).to.be.revertedWith("can't save zero value")];
+                            _a = _b.sent(), saveERC20 = _a.saveERC20, token = _a.token;
+                            return [4 /*yield*/, token.approve(saveERC20.target, 100)];
                         case 2:
-                            _a.sent();
+                            _b.sent();
+                            tx = saveERC20.deposit(100);
+                            return [4 /*yield*/, chai_1.expect(tx).to.be.revertedWith("can't save zero value")];
+                        case 3:
+                            _b.sent();
                             return [2 /*return*/];
                     }
                 });
